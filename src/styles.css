@@ -420,12 +420,15 @@ button:disabled {
 .game-main-grid {
   display: grid;
   grid-template-columns: minmax(0, 1.4fr) minmax(380px, 0.9fr);
+  align-items: stretch;
   gap: 20px;
   max-width: 1600px;
   width: 100%;
   margin: 0 auto;
   padding: 20px 28px 40px;
   flex: 1;
+  height: 0;
+  min-height: calc(100vh - 80px);
 }
 
 .recon-column {
@@ -835,13 +838,38 @@ button:disabled {
   position: relative;
   flex: 1;
   min-height: 380px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
   background: #060b13;
+  overflow: hidden;
+}
+
+.map-container-wrapper {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  min-height: 380px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
 }
 
 .tactical-guess-map {
   width: 100%;
   height: 100%;
   min-height: 380px;
+  flex: 1;
+  z-index: 10;
+}
+
+.map-tactical-grid {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 400;
+  background: radial-gradient(circle at center, transparent 0%, rgba(3, 7, 15, 0.25) 100%);
+  border: 1px solid rgba(99, 230, 255, 0.08);
 }
 
 .map-instruction-overlay {

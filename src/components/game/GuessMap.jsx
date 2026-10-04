@@ -78,6 +78,21 @@ function MapCameraAdjuster({ guess, trueLocation }) {
   return null;
 }
 
+/**
+ * Automatically invalidates map size upon mounting and container dimension changes
+ */
+function MapResizer() {
+  const map = useMap();
+  useEffect(() => {
+    map.invalidateSize();
+    const timer = setTimeout(() => {
+      map.invalidateSize();
+    }, 200);
+    return () => clearTimeout(timer);
+  }, [map]);
+  return null;
+}
+
 export default function GuessMap({
   guess,
   onGuess,
@@ -92,16 +107,30 @@ export default function GuessMap({
         center={[20, 0]}
         zoom={2}
         minZoom={2}
-        maxZoom={10}
+        maxZoom={12}
         scrollWheelZoom
         className="tactical-guess-map"
         worldCopyJump
+        style={{ width: "100%", height: "100%", minHeight: "380px" }}
       >
-        {/* Dark matter CartoDB basemap for high-tech tactical visual aesthetic */}
+        <MapResizer />
+
+        {/* Primary: OpenStreetMap (globally reliable, no API key) */}
         <TileLayer
-          attribution='&copy; <a href="https://carto.com/">CARTO</a> &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-          url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
+          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
           maxZoom={19}
+          crossOrigin=""
+        />
+
+        {/* Dark overlay: CartoDB Dark Matter (loads on top if reachable) */}
+        <TileLayer
+          attribution='&copy; <a href="https://carto.com/">CARTO</a>'
+          url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
+          subdomains="abcd"
+          maxZoom={19}
+          opacity={0.85}
+          crossOrigin=""
         />
 
         {/* Map Click Handler */}
